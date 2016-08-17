@@ -13,7 +13,7 @@
 #   ODOO_BRANCH=maao-9.0
 #
 # Also some configuration could be passed as command line args:
-#   deploy_odoo <db_host> <db_user> <db_pass>
+#   sudo bash maao-deploy.bash <db_host> <db_user> <db_pass>
 # 
 
 # Parse environment variables
