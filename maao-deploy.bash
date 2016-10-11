@@ -36,11 +36,11 @@ set -e;   # fail on errors
 # Update Server
 #--------------------------------------------------
 echo -e "\n${BLUEC}Update Server...${NC}\n";
-sudo apt-get update
-sudo apt-get upgrade -y
+sudo apt-get update -qq
+sudo apt-get upgrade -qq -y
 
 # Install extra dependencies
-sudo apt-get install -y libtiff5-dev libjpeg8-dev zlib1g-dev \
+sudo apt-get install -qq -y libtiff5-dev libjpeg8-dev zlib1g-dev \
         libfreetype6-dev liblcms2-dev libwebp-dev 
 
 #--------------------------------------------------
