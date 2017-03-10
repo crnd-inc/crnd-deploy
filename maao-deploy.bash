@@ -2,6 +2,8 @@
 
 # WARN: Must be ran under SUDO
 
+# WARN: Requires odoo-helper-scripts to be installed
+
 # Supports passing parametrs as environment variables and as arguments to script
 # Environment vars and default values:
 #   ODOO_USER=odoo
@@ -18,7 +20,8 @@
 
 # Parse environment variables
 ODOO_REPO=${ODOO_REPO:-https://github.com/managment-and-acounting-on-line/maao};
-ODOO_BRANCH=${ODOO_BRANCH:-maao-9.0};
+ODOO_BRANCH=${ODOO_BRANCH:-maao-9.0-translate};
+ODOO_VERSION=${ODOO_VERSION:-9.0};
 ODOO_USER=${ODOO_USER:-odoo};
 PROJECT_ROOT_DIR=${ODOO_INSTALL_DIR:-/opt/odoo};
 DB_HOST=${ODOO_DB_HOST:-localhost};
@@ -33,23 +36,25 @@ DB_PASSWORD=${3:-$DB_PASSWORD};
 set -e;   # fail on errors
 
 #--------------------------------------------------
-# Update Server
+# Ensure odoo-helper installed
+#--------------------------------------------------
+if ! command -v odoo-helper >/dev/null 2>&1; then
+    echo -e "Odoo-helper not installed!";
+    exit 1;
+fi
+
+#--------------------------------------------------
+# Update Server and Install Dependencies
 #--------------------------------------------------
 echo -e "\n${BLUEC}Update Server...${NC}\n";
 sudo apt-get update -qq
 sudo apt-get upgrade -qq -y
-
-# Install extra dependencies
 sudo apt-get install -qq -y libtiff5-dev libjpeg8-dev zlib1g-dev \
         libfreetype6-dev liblcms2-dev libwebp-dev 
 
-#--------------------------------------------------
-# Install odoo-helper-scripts
-#--------------------------------------------------
-echo -e "\n${BLUEC}Installing odoo-helper-scripts${NC}\n";
-wget -O - https://raw.githubusercontent.com/katyukha/odoo-helper-scripts/dev/install-system.bash | sudo bash -s
-sudo odoo-helper system update dev   # checkout to dev version of helpere scripts
-
+sudo odoo-helper install pre-requirements -y;
+sudo odoo-helper install sys-deps -y $ODOO_VERSION;
+sudo odoo-helper install postgres odoo odoo;
 
 #--------------------------------------------------
 # Install Odoo
@@ -74,16 +79,12 @@ INIT_SCRIPT="/etc/init.d/odoo";
 ODOO_PID_FILE="/var/run/odoo.pid";  # default odoo pid file location
 
 install_create_project_dir_tree;   # imported from 'install' module
-install_system_prerequirements;    # imported from 'install' module
-
-
-# install_and_configure_postgresql;   # imported from 'install' module
 
 if [ ! -d $ODOO_PATH ]; then
-    install_clone_odoo;   # imported from 'install' module
+    #install_clone_odoo;   # imported from 'install' module
+    install_download_odoo;
 fi
 
-install_sys_deps;   # imported from 'install' module
 install_python_prerequirements 1;   # imported from 'install' module
 
 # Run setup.py with gevent workaround applied.
