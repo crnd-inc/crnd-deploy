@@ -36,22 +36,26 @@ DB_PASSWORD=${3:-$DB_PASSWORD};
 set -e;   # fail on errors
 
 #--------------------------------------------------
-# Ensure odoo-helper installed
-#--------------------------------------------------
-if ! command -v odoo-helper >/dev/null 2>&1; then
-    echo -e "Odoo-helper not installed!";
-    exit 1;
-fi
-
-#--------------------------------------------------
 # Update Server and Install Dependencies
 #--------------------------------------------------
 echo -e "\n${BLUEC}Update Server...${NC}\n";
 sudo apt-get update -qq
 sudo apt-get upgrade -qq -y
 sudo apt-get install -qq -y libtiff5-dev libjpeg8-dev zlib1g-dev \
-        libfreetype6-dev liblcms2-dev libwebp-dev 
+        libfreetype6-dev liblcms2-dev libwebp-dev wget git
 
+#--------------------------------------------------
+# Ensure odoo-helper installed
+#--------------------------------------------------
+if ! command -v odoo-helper >/dev/null 2>&1; then
+    echo -e "Odoo-helper not installed! installing...";
+    wget -O /tmp/odoo-helper-install.bash https://raw.githubusercontent.com/katyukha/odoo-helper-scripts/master/install-system.bash;
+
+    # install latest version of odoo-helper scripts
+    sudo bash /tmp/odoo-helper-install.bash dev
+fi
+
+# Install odoo pre-requirements
 sudo odoo-helper install pre-requirements -y;
 sudo odoo-helper install sys-deps -y $ODOO_VERSION;
 sudo odoo-helper install postgres odoo odoo;
@@ -81,11 +85,11 @@ ODOO_PID_FILE="/var/run/odoo.pid";  # default odoo pid file location
 install_create_project_dir_tree;   # imported from 'install' module
 
 if [ ! -d $ODOO_PATH ]; then
-    #install_clone_odoo;   # imported from 'install' module
-    install_download_odoo;
+    install_clone_odoo;   # imported from 'install' module
+    #install_download_odoo;
 fi
 
-install_python_prerequirements 1;   # imported from 'install' module
+install_python_prerequirements;   # imported from 'install' module
 
 # Run setup.py with gevent workaround applied.
 odoo_run_setup_py;  # imported from 'install' module
