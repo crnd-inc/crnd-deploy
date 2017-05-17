@@ -2,7 +2,7 @@
 
 # WARN: Must be ran under SUDO
 
-# WARN: Requires odoo-helper-scripts to be installed
+# NOTE: Automaticaly installs odoo-helper-scripts if not installed yet
 
 # Supports passing parametrs as environment variables and as arguments to script
 # Environment vars and default values:
@@ -18,7 +18,9 @@
 #   sudo bash maao-deploy.bash <db_host> <db_user> <db_pass>
 # 
 
+#--------------------------------------------------
 # Parse environment variables
+#--------------------------------------------------
 ODOO_REPO=${ODOO_REPO:-https://github.com/managment-and-acounting-on-line/maao};
 ODOO_BRANCH=${ODOO_BRANCH:-maao-9.0-translate};
 ODOO_VERSION=${ODOO_VERSION:-9.0};
@@ -28,10 +30,89 @@ DB_HOST=${ODOO_DB_HOST:-localhost};
 DB_USER=${ODOO_DB_USER:-odoo};
 DB_PASSWORD=${ODOO_DB_PASSWORD:-odoo};
 
-# parse commandline args
-DB_HOST=${1:-$DB_HOST};
-DB_USER=${2:-$DB_USER};
-DB_PASSWORD=${3:-$DB_PASSWORD};
+
+#--------------------------------------------------
+# FN: Print usage
+#--------------------------------------------------
+function print_usage {
+
+    echo "
+Usage:
+
+    maao-deploy [options]    - install odoo
+
+Options:
+
+    --odoo-repo <repo>       - git repository to clone odoo from.
+                               default: $ODOO_REPO
+    --odoo-branch <branch>   - odoo branch to clone. default: $ODOO_BRANCH
+    --odoo-version <version> - odoo version to clone. default: $ODOO_VERSION
+    --odoo-user <user>       - name of system user to run odoo with.
+                               default: $ODOO_USER
+    --db-host                - database host to be used by odoo.
+                               default: $DB_HOST
+    --db-user                - database user to connect to db with
+                               default: $DB_USER
+    --db-password            - database password to connect to db with
+                               default: $DB_PASSWORD
+    --install-dir            - directory to install odoo in
+                               default: $PROJECT_ROOT_DIR
+";
+}
+
+#--------------------------------------------------
+# Parse command line
+#--------------------------------------------------
+while [[ $# -gt 0 ]]
+do
+    key="$1";
+    case $key in
+        --odoo-repo)
+            ODOO_REPO=$2;
+            shift;
+        ;;
+        --odoo-branch)
+            ODOO_BRANCH=$2;
+            shift;
+        ;;
+        --odoo-version)
+            ODOO_VERSION=$2;
+            shift;
+        ;;
+        --odoo-user)
+            ODOO_USER=$2;
+            shift;
+        ;;
+        --db-host)
+            DB_HOST=$2;
+            shift;
+        ;;
+        --db-user)
+            DB_USER=$2;
+            shift;
+        ;;
+        --db-password)
+            DB_PASSWORD=$2;
+            shift;
+        ;;
+        --install-dir)
+            PROJECT_ROOT_DIR=$2;
+            shift;
+        ;;
+        -h|--help|help)
+            print_usage;
+            exit 0;
+        ;;
+        *)
+            echo "Unknown option global option /command $key";
+            echo "Use --help option to get info about available options.";
+            exit 1;
+        ;;
+    esac;
+    shift;
+done;
+#--------------------------------------------------
+
 
 set -e;   # fail on errors
 
