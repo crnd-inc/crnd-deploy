@@ -161,7 +161,7 @@ unset VENV_DIR;       # disable vertual environment
 # define addons path to be placed in config files
 ADDONS_PATH="$ODOO_PATH/openerp/addons,$ODOO_PATH/addons,$ADDONS_DIR";
 INIT_SCRIPT="/etc/init.d/odoo";
-ODOO_PID_FILE="/var/run/odoo.pid";  # default odoo pid file location
+ODOO_PID_FILE="$PROJECT_ROOT_DIR/odoo.pid";  # default odoo pid file location
 
 install_create_project_dir_tree;   # imported from 'install' module
 
@@ -209,22 +209,25 @@ fi
 echo -e "\n${BLUEC}Creating init script${NC}\n";
 cp $ODOO_PATH/debian/init /etc/init.d/odoo
 chmod a+x /etc/init.d/odoo
-sed -i -r "s@DAEMON=(.*)@DAEMON=/usr/local/bin/odoo.py@" /etc/init.d/odoo;
+sed -i -r "s@DAEMON=(.*)@DAEMON=$(check_command odoo.py odoo)@" /etc/init.d/odoo;
 sed -i -r "s@CONFIG=(.*)@CONFIG=$ODOO_CONF_FILE@" /etc/init.d/odoo;
 sed -i -r "s@LOGFILE=(.*)@LOGFILE=$LOG_FILE@" /etc/init.d/odoo;
 sed -i -r "s@USER=(.*)@USER=$ODOO_USER@" /etc/init.d/odoo;
 sudo update-rc.d odoo defaults
 
 # Configuration file
-chown root:$ODOO_USER $ODOO_CONF_FILE
+chown root:$ODOO_USER $ODOO_CONF_FILE;
 chmod 0640 $ODOO_CONF_FILE;
 
 # Log
-chown $ODOO_USER:$ODOO_USER $LOG_DIR
+chown $ODOO_USER:$ODOO_USER $LOG_DIR;
 chmod 0750 $LOG_DIR
 
 # Data dir
-chown $ODOO_USER:$ODOO_USER $DATA_DIR
+chown $ODOO_USER:$ODOO_USER $DATA_DIR;
+
+# Odoo root dir
+chown $ODOO_USER:$ODOO_USER $PROJECT_ROOT_DIR;
 
 #--------------------------------------------------
 # Configure logrotate
