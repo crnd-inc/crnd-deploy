@@ -192,6 +192,9 @@ install_generate_odoo_conf $ODOO_CONF_FILE;   # imported from 'install' module
 echo "#---ODOO-INSTANCE-CONFIG---" >> /etc/$CONF_FILE_NAME;
 echo "`print_helper_config`" >> /etc/$CONF_FILE_NAME;
 
+# this will make odoo helper scripts to run odoo with specified user (via sudo call)
+echo "SERVER_RUN_USER=$ODOO_USER;" >> /etc/$CONF_FILE_NAME;
+
 
 #--------------------------------------------------
 # Create Odoo User
