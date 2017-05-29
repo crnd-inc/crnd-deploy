@@ -57,6 +57,7 @@ Options:
                                default: $DB_PASSWORD
     --install-dir            - directory to install odoo in
                                default: $PROJECT_ROOT_DIR
+    -h|--help|help           - show this help message
 ";
 }
 
