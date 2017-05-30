@@ -119,12 +119,23 @@ parser = argparse.ArgumentParser(
     description='Simply generates nginx conf and prints it to STDOUT')
 
 template_group = parser.add_argument_group('Template')
-template_group.add_argument('--instance-name', required=True)
-template_group.add_argument('--instance-ip', required=True)
-template_group.add_argument('--instance-port', type=int, default=8069)
-template_group.add_argument('--instance-lp-port', type=int, default=8072)
-template_group.add_argument('--frontend-ip', default='0.0.0.0')
-template_group.add_argument('--frontend-server-name', required=True)
+template_group.add_argument(
+    '--instance-name', required=True,
+    help='short name of instance to gen config for')
+template_group.add_argument(
+    '--instance-ip', required=True, default='localhost',
+    help='Odoo instance ip')
+template_group.add_argument(
+    '--instance-port', type=int, default=8069, help='Odoo instance port')
+template_group.add_argument(
+    '--instance-lp-port', type=int, default=8072,
+    help='Odoo instance longpolling port (used for chatter)')
+template_group.add_argument(
+    '--frontend-ip', default='0.0.0.0',
+    help='IP to bind nginx to')
+template_group.add_argument(
+    '--frontend-server-name', required=True,
+    help='nginx servername')
 args = parser.parse_args()
 
 generated_conf = NGINX_TEMPLATE.format(**vars(args))
