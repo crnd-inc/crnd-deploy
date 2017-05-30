@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# TODO:
+#      - optionaly install nginx
+#      - optionaly configure nginx
+
 # WARN: Must be ran under SUDO
 
 # NOTE: Automaticaly installs odoo-helper-scripts if not installed yet
@@ -49,14 +53,16 @@ Options:
     --odoo-version <version> - odoo version to clone. default: $ODOO_VERSION
     --odoo-user <user>       - name of system user to run odoo with.
                                default: $ODOO_USER
-    --db-host                - database host to be used by odoo.
+    --db-host <host>         - database host to be used by odoo.
                                default: $DB_HOST
-    --db-user                - database user to connect to db with
+    --db-user <user>         - database user to connect to db with
                                default: $DB_USER
-    --db-password            - database password to connect to db with
+    --db-password <password> - database password to connect to db with
                                default: $DB_PASSWORD
-    --install-dir            - directory to install odoo in
+    --install-dir <path>     - directory to install odoo in
                                default: $PROJECT_ROOT_DIR
+    --proxy-mode             - Set this option if you plan to run odoo
+                               behind proxy (nginx, etc)
     -h|--help|help           - show this help message
 ";
 }
@@ -99,6 +105,9 @@ do
         --install-dir)
             PROJECT_ROOT_DIR=$2;
             shift;
+        ;;
+        --proxy-mode)
+            PROXY_MODE=1;
         ;;
         -h|--help|help)
             print_usage;
@@ -160,7 +169,7 @@ config_default_vars;  # imported from common module
 unset VENV_DIR;       # disable vertual environment
 
 # define addons path to be placed in config files
-ADDONS_PATH="$ODOO_PATH/openerp/addons,$ODOO_PATH/addons,$ADDONS_DIR";
+ADDONS_PATH="$ODOO_PATH/openerp/addons,$ODOO_PATH/odoo/addons,$ODOO_PATH/addons,$ADDONS_DIR";
 INIT_SCRIPT="/etc/init.d/odoo";
 ODOO_PID_FILE="$PROJECT_ROOT_DIR/odoo.pid";  # default odoo pid file location
 
@@ -187,6 +196,11 @@ ODOO_CONF_OPTIONS[db_port]="False";
 ODOO_CONF_OPTIONS[db_user]="$DB_USER";
 ODOO_CONF_OPTIONS[db_password]="$DB_PASSWORD";
 ODOO_CONF_OPTIONS[pidfile]="None";   # pid file will be managed by init script, not odoo itself
+
+if [ ! -z $PROXY_MODE ]; then
+    ODOO_CONF_OPTIONS[proxy_mode]="True";
+fi
+
 install_generate_odoo_conf $ODOO_CONF_FILE;   # imported from 'install' module
 
 # Write odoo-helper project config
@@ -196,6 +210,15 @@ echo "`print_helper_config`" >> /etc/$CONF_FILE_NAME;
 # this will make odoo helper scripts to run odoo with specified user (via sudo call)
 echo "SERVER_RUN_USER=$ODOO_USER;" >> /etc/$CONF_FILE_NAME;
 
+#--------------------------------------------------
+# Fix odoo 9/10 addons path compatability
+#--------------------------------------------------
+if [ ! -d $ODOO_PATH/openerp/addons ]; then
+    mkdir -p $ODOO_PATH/openerp/addons;
+fi
+if [ ! -d $ODOO_PATH/odoo/addons ]; then
+    mkdir -p $ODOO_PATH/odoo/addons;
+fi
 
 #--------------------------------------------------
 # Create Odoo User
