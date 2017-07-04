@@ -140,7 +140,8 @@ sudo apt-get install -qq -y libtiff5-dev libjpeg8-dev zlib1g-dev \
 #--------------------------------------------------
 if ! command -v odoo-helper >/dev/null 2>&1; then
     echo -e "Odoo-helper not installed! installing...";
-    wget -O /tmp/odoo-helper-install.bash https://raw.githubusercontent.com/katyukha/odoo-helper-scripts/master/install-system.bash;
+    wget -O /tmp/odoo-helper-install.bash \
+        https://raw.githubusercontent.com/katyukha/odoo-helper-scripts/master/install-system.bash;
 
     # install latest version of odoo-helper scripts
     sudo bash /tmp/odoo-helper-install.bash dev
@@ -195,7 +196,9 @@ ODOO_CONF_OPTIONS[db_host]="$DB_HOST";
 ODOO_CONF_OPTIONS[db_port]="False";
 ODOO_CONF_OPTIONS[db_user]="$DB_USER";
 ODOO_CONF_OPTIONS[db_password]="$DB_PASSWORD";
-ODOO_CONF_OPTIONS[pidfile]="None";   # pid file will be managed by init script, not odoo itself
+
+# pid file will be managed by init script, not odoo itself
+ODOO_CONF_OPTIONS[pidfile]="None";
 
 if [ ! -z $PROXY_MODE ]; then
     ODOO_CONF_OPTIONS[proxy_mode]="True";
@@ -207,7 +210,8 @@ install_generate_odoo_conf $ODOO_CONF_FILE;   # imported from 'install' module
 echo "#---ODOO-INSTANCE-CONFIG---" >> /etc/$CONF_FILE_NAME;
 echo "`print_helper_config`" >> /etc/$CONF_FILE_NAME;
 
-# this will make odoo helper scripts to run odoo with specified user (via sudo call)
+# this will make odoo helper scripts to run odoo with specified user
+# (via sudo call)
 echo "SERVER_RUN_USER=$ODOO_USER;" >> /etc/$CONF_FILE_NAME;
 
 #--------------------------------------------------
@@ -225,7 +229,8 @@ fi
 #--------------------------------------------------
 if ! getent passwd $ODOO_USER  > /dev/null; then
     echo -e "\n${BLUEC}Createing Odoo user: $ODOO_USER ${NC}\n";
-    sudo adduser --system --no-create-home --home $PROJECT_ROOT_DIR --quiet --group $ODOO_USER;
+    sudo adduser --system --no-create-home --home $PROJECT_ROOT_DIR \
+        --quiet --group $ODOO_USER;
 else
     echo -e "\n${YELLOWC}Odoo user already exists, using it.${NC}\n";
 fi
