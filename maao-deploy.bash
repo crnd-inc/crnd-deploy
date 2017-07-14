@@ -348,7 +348,7 @@ echo -e "\n${GREENC}Odoo installed!${NC}\n";
 if [ ! -z $INSTALL_LOCAL_NGINX ]; then
     echo -e "${BLUEC}Installing and configuring local nginx..,${NC}";
     NGINX_CONF_PATH="/etc/nginx/sites-available/$(hostname).conf";
-    sudo apt-get install nginx;
+    sudo apt-get install -y --no-install-recommends nginx;
     sudo python $NGIX_CONF_GEN \
         --instance-name="$(hostname -s)" \
         --frontend-server-name="$(hostname)" > $NGINX_CONF_PATH;

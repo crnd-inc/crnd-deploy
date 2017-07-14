@@ -123,7 +123,7 @@ template_group.add_argument(
     '--instance-name', required=True,
     help='short name of instance to gen config for')
 template_group.add_argument(
-    '--instance-ip', required=True, default='localhost',
+    '--instance-ip', default='localhost',
     help='Odoo instance ip')
 template_group.add_argument(
     '--instance-port', type=int, default=8069, help='Odoo instance port')
