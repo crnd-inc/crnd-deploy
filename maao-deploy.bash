@@ -49,6 +49,17 @@ INSTALL_MODE=${INSTALL_MODE:-git};
 
 
 #--------------------------------------------------
+# Define color variables
+#--------------------------------------------------
+NC='\e[0m';
+REDC='\e[31m';
+GREENC='\e[32m';
+YELLOWC='\e[33m';
+BLUEC='\e[34m';
+LBLUEC='\e[94m';
+
+
+#--------------------------------------------------
 # FN: Print usage
 #--------------------------------------------------
 function print_usage {
@@ -136,6 +147,7 @@ do
         ;;
         --local-postgres)
             # Generate random password for database
+            DB_HOST="localhost";
             DB_PASSWORD="$(< /dev/urandom tr -dc A-Za-z0-9 | head -c 12)";
             INSTALL_LOCAL_POSTGRES=1;
         ;;
@@ -168,6 +180,14 @@ sudo apt-get update -qq
 sudo apt-get upgrade -qq -y
 sudo apt-get install -qq -y libtiff5-dev libjpeg8-dev zlib1g-dev \
         libfreetype6-dev liblcms2-dev libwebp-dev wget git
+
+#--------------------------------------------------
+# Generate locales
+#--------------------------------------------------
+echo -e "\n${BLUEC}Update locales...${NC}\n";
+sudo locale-gen en_US.UTF-8
+sudo locale-gen ru_UA.UTF-8
+sudo locale-gen uk_UA.UTF-8
 
 #--------------------------------------------------
 # Ensure odoo-helper installed
