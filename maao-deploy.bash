@@ -33,6 +33,7 @@ PROJECT_ROOT_DIR=${ODOO_INSTALL_DIR:-/opt/odoo};
 DB_HOST=${ODOO_DB_HOST:-localhost};
 DB_USER=${ODOO_DB_USER:-odoo};
 DB_PASSWORD=${ODOO_DB_PASSWORD:-odoo};
+INSTALL_MODE=${INSTALL_MODE:-git};
 
 
 #--------------------------------------------------
@@ -61,6 +62,9 @@ Options:
                                default: $DB_PASSWORD
     --install-dir <path>     - directory to install odoo in
                                default: $PROJECT_ROOT_DIR
+    --install-mode <mode>    - installation mode. could be: 'git', 'archive'
+                               default: $INSTALL_MODE
+    --local-postgres         - install local instance of postgresql server
     --proxy-mode             - Set this option if you plan to run odoo
                                behind proxy (nginx, etc)
     -h|--help|help           - show this help message
@@ -106,8 +110,19 @@ do
             PROJECT_ROOT_DIR=$2;
             shift;
         ;;
+        --install-mode)
+            if [ "$2" != "git" ] && [ "$2" != "archive" ]; then
+                echo "ERROR: Wrong install mode specified: $2"
+                exit 1;
+            fi
+            INSTALL_MODE=$2;
+        ;;
         --proxy-mode)
             PROXY_MODE=1;
+        ;;
+        --local-postgres)
+            DB_PASSWORD="$(< /dev/urandom tr -dc A-Za-z0-9 | head -c 12)";
+            INSTALL_LOCAL_POSTGRES=1;
         ;;
         -h|--help|help)
             print_usage;
@@ -150,7 +165,10 @@ fi
 # Install odoo pre-requirements
 sudo odoo-helper install pre-requirements -y;
 sudo odoo-helper install sys-deps -y $ODOO_VERSION;
-sudo odoo-helper install postgres odoo odoo;
+
+if [ ! -z $INSTALL_LOCAL_POSTGRES ]; then
+    sudo odoo-helper install postgres $DB_USER $DB_PASSWORD;
+fi
 
 #--------------------------------------------------
 # Install Odoo
@@ -177,8 +195,13 @@ ODOO_PID_FILE="$PROJECT_ROOT_DIR/odoo.pid";  # default odoo pid file location
 install_create_project_dir_tree;   # imported from 'install' module
 
 if [ ! -d $ODOO_PATH ]; then
-    install_clone_odoo;   # imported from 'install' module
-    #install_download_odoo;
+    if [ "$INSTALL_MODE" == "git" ]; then
+        install_clone_odoo;   # imported from 'install' module
+    elif [ "$INSTALL_MODE" == "archive" ]; then
+        install_download_odoo;
+    else
+        echo -e "${REDC}ERROR:${NC} wrong install mode specified: '$INSTALL_MODE'!";
+    fi
 fi
 
 install_python_prerequirements;   # imported from 'install' module
