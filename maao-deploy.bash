@@ -59,6 +59,14 @@ BLUEC='\e[34m';
 LBLUEC='\e[94m';
 
 
+if [[ $UID != 0 ]]; then
+    echo -e "${REDC}ERROR${NC}";
+    echo -e "${YELLOWC}Please run this script with sudo:${NC}"
+    echo -e "${BLUEC}sudo $0 $* ${NC}"
+    exit 1
+fi
+
+
 #--------------------------------------------------
 # FN: Print usage
 #--------------------------------------------------
