@@ -23,6 +23,18 @@
 # 
 
 #--------------------------------------------------
+# Script params
+#--------------------------------------------------
+SCRIPT=$0;
+SCRIPT_NAME=$(basename $SCRIPT);
+SCRIPT_DIR=$(dirname $SCRIPT);
+SCRIPT_PATH=$(readlink -f $SCRIPT);
+NGIX_CONF_GEN="$SCRIPT_DIR/gen_nginx.py";
+
+WORKDIR=`pwd`;
+
+
+#--------------------------------------------------
 # Parse environment variables
 #--------------------------------------------------
 ODOO_REPO=${ODOO_REPO:-https://github.com/managment-and-acounting-on-line/maao};
@@ -67,6 +79,8 @@ Options:
     --local-postgres         - install local instance of postgresql server
     --proxy-mode             - Set this option if you plan to run odoo
                                behind proxy (nginx, etc)
+    --local-nginx            - install local nginx and configure it for this
+                               odoo instance
     -h|--help|help           - show this help message
 ";
 }
@@ -121,8 +135,13 @@ do
             PROXY_MODE=1;
         ;;
         --local-postgres)
+            # Generate random password for database
             DB_PASSWORD="$(< /dev/urandom tr -dc A-Za-z0-9 | head -c 12)";
             INSTALL_LOCAL_POSTGRES=1;
+        ;;
+        --local-nginx)
+            INSTALL_LOCAL_NGINX=1;
+            PROXY_MODE=1;
         ;;
         -h|--help|help)
             print_usage;
@@ -297,3 +316,15 @@ $LOG_DIR/*.log {
 EOF
 
 echo -e "\n${GREENC}Odoo installed!${NC}\n";
+
+if [ ! -z $INSTALL_LOCAL_NGINX ]; then
+    echo -e "${BLUEC}Installing and configuring local nginx..,${NC}";
+    NGINX_CONF_PATH="/etc/nginx/sites-available/$(hostname).conf";
+    sudo apt-get install nginx;
+    sudo python $NGIX_CONF_GEN \
+        --instance-name="$(hostname -s)" \
+        --frontend-server-name="$(hostname)" > $NGINX_CONF_PATH;
+    echo -e "${GREENC}Nginx seems to be installed and default config is generated. ";
+    echo -e "Look at $NGINX_CONF_PATH for nginx config.${NC}";
+fi
+
