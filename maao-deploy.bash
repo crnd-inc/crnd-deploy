@@ -280,10 +280,10 @@ echo "SERVER_RUN_USER=$ODOO_USER;" >> /etc/$CONF_FILE_NAME;
 # Fix odoo 9/10 addons path compatability
 #--------------------------------------------------
 if [ ! -d $ODOO_PATH/openerp/addons ]; then
-    mkdir -p $ODOO_PATH/openerp/addons;
+    sudo mkdir -p $ODOO_PATH/openerp/addons;
 fi
 if [ ! -d $ODOO_PATH/odoo/addons ]; then
-    mkdir -p $ODOO_PATH/odoo/addons;
+    sudo mkdir -p $ODOO_PATH/odoo/addons;
 fi
 
 #--------------------------------------------------
@@ -301,8 +301,8 @@ fi
 # Create Init Script
 #--------------------------------------------------
 echo -e "\n${BLUEC}Creating init script${NC}\n";
-cp $ODOO_PATH/debian/init /etc/init.d/odoo
-chmod a+x /etc/init.d/odoo
+sudo cp $ODOO_PATH/debian/init /etc/init.d/odoo
+sudo chmod a+x /etc/init.d/odoo
 sed -i -r "s@DAEMON=(.*)@DAEMON=$(check_command odoo.py odoo)@" /etc/init.d/odoo;
 sed -i -r "s@CONFIG=(.*)@CONFIG=$ODOO_CONF_FILE@" /etc/init.d/odoo;
 sed -i -r "s@LOGFILE=(.*)@LOGFILE=$LOG_FILE@" /etc/init.d/odoo;
@@ -310,24 +310,24 @@ sed -i -r "s@USER=(.*)@USER=$ODOO_USER@" /etc/init.d/odoo;
 sudo update-rc.d odoo defaults
 
 # Configuration file
-chown root:$ODOO_USER $ODOO_CONF_FILE;
-chmod 0640 $ODOO_CONF_FILE;
+sudo chown root:$ODOO_USER $ODOO_CONF_FILE;
+sudo chmod 0640 $ODOO_CONF_FILE;
 
 # Log
-chown $ODOO_USER:$ODOO_USER $LOG_DIR;
-chmod 0750 $LOG_DIR
+sudo chown $ODOO_USER:$ODOO_USER $LOG_DIR;
+sudo chmod 0750 $LOG_DIR
 
 # Data dir
-chown $ODOO_USER:$ODOO_USER $DATA_DIR;
+sudo chown $ODOO_USER:$ODOO_USER $DATA_DIR;
 
 # Odoo root dir
-chown $ODOO_USER:$ODOO_USER $PROJECT_ROOT_DIR;
+sudo chown $ODOO_USER:$ODOO_USER $PROJECT_ROOT_DIR;
 
 #--------------------------------------------------
 # Configure logrotate
 #--------------------------------------------------
 echo -e "\n${BLUEC}Configuring logrotate${NC}\n";
-cat > /etc/logrotate.d/odoo << EOF
+sudo cat > /etc/logrotate.d/odoo << EOF
 $LOG_DIR/*.log {
     copytruncate
     missingok
