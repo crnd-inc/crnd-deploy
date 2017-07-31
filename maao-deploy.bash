@@ -226,12 +226,13 @@ source $(odoo-helper system lib-path common);
 
 # import odoo-helper libs
 ohelper_require 'install';
+ohelper_require 'config';
 
 # Do not ask confirmation when installing dependencies
 ALWAYS_ANSWER_YES=1;
 
 # Configure default odoo-helper variables
-config_default_vars;  # imported from common module
+config_set_defaults;  # imported from common module
 unset VENV_DIR;       # disable vertual environment
 
 # define addons path to be placed in config files
@@ -278,7 +279,7 @@ install_generate_odoo_conf $ODOO_CONF_FILE;   # imported from 'install' module
 
 # Write odoo-helper project config
 echo "#---ODOO-INSTANCE-CONFIG---" >> /etc/$CONF_FILE_NAME;
-echo "`print_helper_config`" >> /etc/$CONF_FILE_NAME;
+echo "`config_print`" >> /etc/$CONF_FILE_NAME;
 
 # this will make odoo helper scripts to run odoo with specified user
 # (via sudo call)
