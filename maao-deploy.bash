@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# TODO:
-#      - optionaly install nginx
-#      - optionaly configure nginx
-
 # WARN: Must be ran under SUDO
 
 # NOTE: Automaticaly installs odoo-helper-scripts if not installed yet
@@ -16,7 +12,9 @@
 #   ODOO_DB_USER=odoo
 #   ODOO_DB_PASSWORD=odoo
 #   ODOO_REPO=https://github.com/managment-and-acounting-on-line/maao
-#   ODOO_BRANCH=maao-9.0
+#   ODOO_BRANCH=10.0-maao-translations-uk-ua
+#   ODOO_VERSION=10.0
+#   ODOO_WORKERS=2
 #
 # Also some configuration could be passed as command line args:
 #   sudo bash maao-deploy.bash <db_host> <db_user> <db_pass>
@@ -38,9 +36,10 @@ WORKDIR=`pwd`;
 # Parse environment variables
 #--------------------------------------------------
 ODOO_REPO=${ODOO_REPO:-https://github.com/managment-and-acounting-on-line/maao};
-ODOO_BRANCH=${ODOO_BRANCH:-maao-9.0-translate};
-ODOO_VERSION=${ODOO_VERSION:-9.0};
+ODOO_BRANCH=${ODOO_BRANCH:-10.0-maao-translations-uk-ua};
+ODOO_VERSION=${ODOO_VERSION:-10.0};
 ODOO_USER=${ODOO_USER:-odoo};
+ODOO_WORKERS=${ODOO_WORKERS:-2};
 PROJECT_ROOT_DIR=${ODOO_INSTALL_DIR:-/opt/odoo};
 DB_HOST=${ODOO_DB_HOST:-localhost};
 DB_USER=${ODOO_DB_USER:-odoo};
@@ -98,6 +97,7 @@ Options:
     --local-postgres         - install local instance of postgresql server
     --proxy-mode             - Set this option if you plan to run odoo
                                behind proxy (nginx, etc)
+    --workers <workers>      - number of workers to run. Default: $ODOO_WORKERS
     --local-nginx            - install local nginx and configure it for this
                                odoo instance
     -h|--help|help           - show this help message
@@ -149,6 +149,10 @@ do
                 exit 1;
             fi
             INSTALL_MODE=$2;
+        ;;
+        --workers)
+            ODOO_WORKERS=$2;
+            shift;
         ;;
         --proxy-mode)
             PROXY_MODE=1;
@@ -267,6 +271,7 @@ ODOO_CONF_OPTIONS[db_host]="$DB_HOST";
 ODOO_CONF_OPTIONS[db_port]="False";
 ODOO_CONF_OPTIONS[db_user]="$DB_USER";
 ODOO_CONF_OPTIONS[db_password]="$DB_PASSWORD";
+ODOO_CONF_OPTIONS[workers]=$ODOO_WORKERS;
 
 # pid file will be managed by init script, not odoo itself
 ODOO_CONF_OPTIONS[pidfile]="None";
