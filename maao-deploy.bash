@@ -149,6 +149,7 @@ do
                 exit 1;
             fi
             INSTALL_MODE=$2;
+            shift;
         ;;
         --workers)
             ODOO_WORKERS=$2;
