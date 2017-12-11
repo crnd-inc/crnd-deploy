@@ -258,7 +258,6 @@ ALWAYS_ANSWER_YES=1;
 
 # Configure default odoo-helper variables
 config_set_defaults;  # imported from common module
-unset VENV_DIR;       # disable vertual environment
 
 # define addons path to be placed in config files
 ADDONS_PATH="$ODOO_PATH/openerp/addons,$ODOO_PATH/odoo/addons,$ODOO_PATH/addons,$ADDONS_DIR";
@@ -277,10 +276,8 @@ if [ ! -d $ODOO_PATH ]; then
     fi
 fi
 
-install_python_prerequirements;   # imported from 'install' module
-
-# Run setup.py with gevent workaround applied.
-odoo_run_setup_py;  # imported from 'install' module
+# install odoo itself
+install_odoo_install;  # imported from 'install' module
 
 # generate odoo config file
 declare -A ODOO_CONF_OPTIONS;
@@ -338,7 +335,7 @@ fi
 echo -e "\n${BLUEC}Creating init script${NC}\n";
 sudo cp $ODOO_PATH/debian/init /etc/init.d/odoo
 sudo chmod a+x /etc/init.d/odoo
-sed -i -r "s@DAEMON=(.*)@DAEMON=$(check_command odoo.py odoo)@" /etc/init.d/odoo;
+sed -i -r "s@DAEMON=(.*)@DAEMON=$(get_server_script)@" /etc/init.d/odoo;
 sed -i -r "s@CONFIG=(.*)@CONFIG=$ODOO_CONF_FILE@" /etc/init.d/odoo;
 sed -i -r "s@LOGFILE=(.*)@LOGFILE=$LOG_FILE@" /etc/init.d/odoo;
 sed -i -r "s@USER=(.*)@USER=$ODOO_USER@" /etc/init.d/odoo;
