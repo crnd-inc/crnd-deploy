@@ -262,7 +262,7 @@ config_set_defaults;  # imported from common module
 # define addons path to be placed in config files
 ADDONS_PATH="$ODOO_PATH/openerp/addons,$ODOO_PATH/odoo/addons,$ODOO_PATH/addons,$ADDONS_DIR";
 INIT_SCRIPT="/etc/init.d/odoo";
-ODOO_PID_FILE="$PROJECT_ROOT_DIR/odoo.pid";  # default odoo pid file location
+ODOO_PID_FILE="/var/run/odoo.pid";  # default odoo pid file location
 
 install_create_project_dir_tree;   # imported from 'install' module
 
@@ -339,6 +339,8 @@ sed -i -r "s@DAEMON=(.*)@DAEMON=$(get_server_script)@" /etc/init.d/odoo;
 sed -i -r "s@CONFIG=(.*)@CONFIG=$ODOO_CONF_FILE@" /etc/init.d/odoo;
 sed -i -r "s@LOGFILE=(.*)@LOGFILE=$LOG_FILE@" /etc/init.d/odoo;
 sed -i -r "s@USER=(.*)@USER=$ODOO_USER@" /etc/init.d/odoo;
+sed -i -r "s@PIDFILE=(.*)@PIDFILE=$ODOO_PID_FILE@" /etc/init.d/odoo;
+sed -i -r "s@PATH=(.*)@PIDFILE=\1:$VENV_DIR/bin@" /etc/init.d/odoo;
 sudo update-rc.d odoo defaults
 
 # Configuration file
