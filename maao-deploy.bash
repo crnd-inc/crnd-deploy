@@ -219,7 +219,18 @@ sudo odoo-helper install pre-requirements -y;
 sudo odoo-helper install sys-deps -y $ODOO_VERSION;
 
 if [ ! -z $INSTALL_LOCAL_POSTGRES ]; then
-    sudo odoo-helper install postgres $DB_USER $DB_PASSWORD;
+    sudo odoo-helper install postgres;
+
+    if ! sudo odoo-helper exec postgres_test_connection; then
+        echo -e "${YELLOWC}WARNING${NC}: it seams postgres not started, so start it befor creating postgres user.";
+
+        # It seams we ran inside docker container, so start postgres server before user creation
+        sudo /etc/init.d/postgresql start;
+        sudo odoo-helper postgres user-create $DB_USER $DB_PASSWORD;
+        sudo /etc/init.d/postgresql stop;
+    else
+        sudo odoo-helper postgres user-create $DB_USER $DB_PASSWORD;
+    fi
 fi
 
 #--------------------------------------------------
