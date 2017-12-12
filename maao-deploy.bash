@@ -31,13 +31,17 @@ NGIX_CONF_GEN="$SCRIPT_DIR/gen_nginx.py";
 
 WORKDIR=`pwd`;
 
-
+#--------------------------------------------------
+# Defaults
+#--------------------------------------------------
+DEFAULT_ODOO_BRANCH=10.0-maao-translations-uk-ua
+DEFAULT_ODOO_VERSION=10.0
 #--------------------------------------------------
 # Parse environment variables
 #--------------------------------------------------
 ODOO_REPO=${ODOO_REPO:-https://github.com/managment-and-acounting-on-line/maao};
-ODOO_BRANCH=${ODOO_BRANCH:-10.0-maao-translations-uk-ua};
-ODOO_VERSION=${ODOO_VERSION:-10.0};
+ODOO_BRANCH=${ODOO_BRANCH:-$DEFAULT_ODOO_BRANCH};
+ODOO_VERSION=${ODOO_VERSION:-$DEFAULT_ODOO_VERSION};
 ODOO_USER=${ODOO_USER:-odoo};
 ODOO_WORKERS=${ODOO_WORKERS:-2};
 PROJECT_ROOT_DIR=${ODOO_INSTALL_DIR:-/opt/odoo};
@@ -122,6 +126,10 @@ do
         --odoo-version)
             ODOO_VERSION=$2;
             shift;
+
+            if [ "$ODOO_VERSION" != "$DEFAULT_ODOO_VERSION" ] && [ "$ODOO_BRANCH" == "$DEFAULT_ODOO_BRANCH" ]; then
+                ODOO_BRANCH=$ODOO_VERSION;
+            fi
         ;;
         --odoo-user)
             ODOO_USER=$2;
@@ -189,9 +197,11 @@ set -e;   # fail on errors
 # Update Server and Install Dependencies
 #--------------------------------------------------
 echo -e "\n${BLUEC}Update Server...${NC}\n";
-sudo apt-get update -qq
-sudo apt-get upgrade -qq -y
-sudo apt-get install -qq -y wget python3-setuptools python3-pip
+sudo apt-get update -qq;
+sudo apt-get upgrade -qq -y;
+echo -e "\n${BLUEC}Installing basic dependencies...${NC}\n";
+sudo apt-get install -qqq -y \
+    wget python-setuptools python-pip python3-setuptools python3-pip locales;
 
 #--------------------------------------------------
 # Generate locales
@@ -205,7 +215,7 @@ sudo locale-gen uk_UA.UTF-8
 # Ensure odoo-helper installed
 #--------------------------------------------------
 if ! command -v odoo-helper >/dev/null 2>&1; then
-    echo -e "Odoo-helper not installed! installing...";
+    echo -e "${BLUEC}Odoo-helper not installed! installing...${NC}";
     wget -T 2 -O /tmp/odoo-helper-install.bash \
         https://raw.githubusercontent.com/katyukha/odoo-helper-scripts/master/install-system.bash;
 

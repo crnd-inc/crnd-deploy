@@ -6,12 +6,12 @@ before_script:
 
 test-9.0:
     script:
-        - bash ./maao-deploy.bash --odoo-version 9.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx --workers 4
+        - bash ./maao-deploy.bash --odoo-version 9.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx
 
 test-10.0:
     script:
-        - bash ./maao-deploy.bash --odoo-version 10.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx --workers 4
+        - bash ./maao-deploy.bash --odoo-version 10.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx
 
 test-11.0:
     script:
-        - bash ./maao-deploy.bash --odoo-version 11.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx --workers 4
+        - bash ./maao-deploy.bash --odoo-version 11.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx
