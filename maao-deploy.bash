@@ -191,8 +191,7 @@ set -e;   # fail on errors
 echo -e "\n${BLUEC}Update Server...${NC}\n";
 sudo apt-get update -qq
 sudo apt-get upgrade -qq -y
-sudo apt-get install -qq -y libtiff5-dev libjpeg8-dev zlib1g-dev \
-        libfreetype6-dev liblcms2-dev libwebp-dev wget git
+sudo apt-get install -qq -y wget
 
 #--------------------------------------------------
 # Generate locales
@@ -207,7 +206,7 @@ sudo locale-gen uk_UA.UTF-8
 #--------------------------------------------------
 if ! command -v odoo-helper >/dev/null 2>&1; then
     echo -e "Odoo-helper not installed! installing...";
-    wget -O -T 2 /tmp/odoo-helper-install.bash \
+    wget -T 2 -O /tmp/odoo-helper-install.bash \
         https://raw.githubusercontent.com/katyukha/odoo-helper-scripts/master/install-system.bash;
 
     # install latest version of odoo-helper scripts
