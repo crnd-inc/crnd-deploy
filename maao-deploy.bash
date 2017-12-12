@@ -207,7 +207,7 @@ sudo locale-gen uk_UA.UTF-8
 #--------------------------------------------------
 if ! command -v odoo-helper >/dev/null 2>&1; then
     echo -e "Odoo-helper not installed! installing...";
-    wget -O /tmp/odoo-helper-install.bash \
+    wget -O -T 2 /tmp/odoo-helper-install.bash \
         https://raw.githubusercontent.com/katyukha/odoo-helper-scripts/master/install-system.bash;
 
     # install latest version of odoo-helper scripts
