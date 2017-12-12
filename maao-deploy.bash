@@ -191,7 +191,7 @@ set -e;   # fail on errors
 echo -e "\n${BLUEC}Update Server...${NC}\n";
 sudo apt-get update -qq
 sudo apt-get upgrade -qq -y
-sudo apt-get install -qq -y wget
+sudo apt-get install -qq -y wget python3-setuptools python3-pip
 
 #--------------------------------------------------
 # Generate locales
