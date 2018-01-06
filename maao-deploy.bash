@@ -201,7 +201,7 @@ sudo apt-get update -qq;
 sudo apt-get upgrade -qq -y;
 echo -e "\n${BLUEC}Installing basic dependencies...${NC}\n";
 sudo apt-get install -qqq -y \
-    wget python-setuptools python-pip python3-setuptools python3-pip locales;
+    wget locales;
 
 #--------------------------------------------------
 # Generate locales
@@ -231,7 +231,7 @@ if [ ! -z $INSTALL_LOCAL_POSTGRES ]; then
     sudo odoo-helper install postgres;
 
     if ! sudo odoo-helper exec postgres_test_connection; then
-        echo -e "${YELLOWC}WARNING${NC}: it seams postgres not started, so start it befor creating postgres user.";
+        echo -e "${YELLOWC}WARNING${NC}: it seams postgres not started, so start it before creating postgres user.";
 
         # It seams we ran inside docker container, so start postgres server before user creation
         sudo /etc/init.d/postgresql start;
@@ -340,7 +340,7 @@ sed -i -r "s@CONFIG=(.*)@CONFIG=$ODOO_CONF_FILE@" /etc/init.d/odoo;
 sed -i -r "s@LOGFILE=(.*)@LOGFILE=$LOG_FILE@" /etc/init.d/odoo;
 sed -i -r "s@USER=(.*)@USER=$ODOO_USER@" /etc/init.d/odoo;
 sed -i -r "s@PIDFILE=(.*)@PIDFILE=$ODOO_PID_FILE@" /etc/init.d/odoo;
-sed -i -r "s@PATH=(.*)@PIDFILE=\1:$VENV_DIR/bin@" /etc/init.d/odoo;
+sed -i -r "s@PATH=(.*)@PATH=\1:$VENV_DIR/bin@" /etc/init.d/odoo;
 sudo update-rc.d odoo defaults
 
 # Configuration file
