@@ -216,11 +216,17 @@ sudo locale-gen uk_UA.UTF-8
 #--------------------------------------------------
 if ! command -v odoo-helper >/dev/null 2>&1; then
     echo -e "${BLUEC}Odoo-helper not installed! installing...${NC}";
-    wget -T 2 -O /tmp/odoo-helper-install.bash \
-        https://raw.githubusercontent.com/katyukha/odoo-helper-scripts/master/install-system.bash;
+    if ! wget -q -T 2 -O /tmp/odoo-helper-install.bash \
+            https://raw.githubusercontent.com/katyukha/odoo-helper-scripts/master/install-system.bash; then
+        echo "${REDC}ERROR${NC}: Cannot download odoo-helper-scripts installer from github. Check your network connection.";
+        exit 1;
+    fi
 
     # install latest version of odoo-helper scripts
     sudo bash /tmp/odoo-helper-install.bash dev
+
+    # Print odoo-helper version
+    odoo-helper --version;
 fi
 
 # Install odoo pre-requirements
@@ -374,7 +380,7 @@ echo -e "\n${GREENC}Odoo installed!${NC}\n";
 if [ ! -z $INSTALL_LOCAL_NGINX ]; then
     echo -e "${BLUEC}Installing and configuring local nginx..,${NC}";
     NGINX_CONF_PATH="/etc/nginx/sites-available/$(hostname).conf";
-    sudo apt-get install -y --no-install-recommends nginx;
+    sudo apt-get install -qqq -y --no-install-recommends nginx;
     sudo python $NGIX_CONF_GEN \
         --instance-name="$(hostname -s)" \
         --frontend-server-name="$(hostname)" > $NGINX_CONF_PATH;
