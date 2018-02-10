@@ -1,5 +1,9 @@
 image: 10.100.98.41:5000/maao-docker/maao-ubuntu
 
+cache:
+    paths:
+        - "/root/.cache/pip"
+
 before_script:
     - apt-get update
     - apt-get install sudo

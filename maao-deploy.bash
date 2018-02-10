@@ -201,7 +201,7 @@ sudo apt-get update -qq;
 sudo apt-get upgrade -qq -y;
 echo -e "\n${BLUEC}Installing basic dependencies...${NC}\n";
 sudo apt-get install -qqq -y \
-    wget python-setuptools python-pip python3-setuptools python3-pip locales;
+    wget locales;
 
 #--------------------------------------------------
 # Generate locales
@@ -216,11 +216,17 @@ sudo locale-gen uk_UA.UTF-8
 #--------------------------------------------------
 if ! command -v odoo-helper >/dev/null 2>&1; then
     echo -e "${BLUEC}Odoo-helper not installed! installing...${NC}";
-    wget -T 2 -O /tmp/odoo-helper-install.bash \
-        https://raw.githubusercontent.com/katyukha/odoo-helper-scripts/master/install-system.bash;
+    if ! wget -q -T 2 -O /tmp/odoo-helper-install.bash \
+            https://raw.githubusercontent.com/katyukha/odoo-helper-scripts/master/install-system.bash; then
+        echo "${REDC}ERROR${NC}: Cannot download odoo-helper-scripts installer from github. Check your network connection.";
+        exit 1;
+    fi
 
     # install latest version of odoo-helper scripts
     sudo bash /tmp/odoo-helper-install.bash dev
+
+    # Print odoo-helper version
+    odoo-helper --version;
 fi
 
 # Install odoo pre-requirements
@@ -231,7 +237,7 @@ if [ ! -z $INSTALL_LOCAL_POSTGRES ]; then
     sudo odoo-helper install postgres;
 
     if ! sudo odoo-helper exec postgres_test_connection; then
-        echo -e "${YELLOWC}WARNING${NC}: it seams postgres not started, so start it befor creating postgres user.";
+        echo -e "${YELLOWC}WARNING${NC}: it seams postgres not started, so start it before creating postgres user.";
 
         # It seams we ran inside docker container, so start postgres server before user creation
         sudo /etc/init.d/postgresql start;
@@ -258,12 +264,11 @@ ALWAYS_ANSWER_YES=1;
 
 # Configure default odoo-helper variables
 config_set_defaults;  # imported from common module
-unset VENV_DIR;       # disable vertual environment
 
 # define addons path to be placed in config files
 ADDONS_PATH="$ODOO_PATH/openerp/addons,$ODOO_PATH/odoo/addons,$ODOO_PATH/addons,$ADDONS_DIR";
 INIT_SCRIPT="/etc/init.d/odoo";
-ODOO_PID_FILE="$PROJECT_ROOT_DIR/odoo.pid";  # default odoo pid file location
+ODOO_PID_FILE="/var/run/odoo.pid";  # default odoo pid file location
 
 install_create_project_dir_tree;   # imported from 'install' module
 
@@ -277,10 +282,8 @@ if [ ! -d $ODOO_PATH ]; then
     fi
 fi
 
-install_python_prerequirements;   # imported from 'install' module
-
-# Run setup.py with gevent workaround applied.
-odoo_run_setup_py;  # imported from 'install' module
+# install odoo itself
+install_odoo_install;  # imported from 'install' module
 
 # generate odoo config file
 declare -A ODOO_CONF_OPTIONS;
@@ -338,10 +341,12 @@ fi
 echo -e "\n${BLUEC}Creating init script${NC}\n";
 sudo cp $ODOO_PATH/debian/init /etc/init.d/odoo
 sudo chmod a+x /etc/init.d/odoo
-sed -i -r "s@DAEMON=(.*)@DAEMON=$(check_command odoo.py odoo)@" /etc/init.d/odoo;
+sed -i -r "s@DAEMON=(.*)@DAEMON=$(get_server_script)@" /etc/init.d/odoo;
 sed -i -r "s@CONFIG=(.*)@CONFIG=$ODOO_CONF_FILE@" /etc/init.d/odoo;
 sed -i -r "s@LOGFILE=(.*)@LOGFILE=$LOG_FILE@" /etc/init.d/odoo;
 sed -i -r "s@USER=(.*)@USER=$ODOO_USER@" /etc/init.d/odoo;
+sed -i -r "s@PIDFILE=(.*)@PIDFILE=$ODOO_PID_FILE@" /etc/init.d/odoo;
+sed -i -r "s@PATH=(.*)@PATH=\1:$VENV_DIR/bin@" /etc/init.d/odoo;
 sudo update-rc.d odoo defaults
 
 # Configuration file
@@ -375,7 +380,7 @@ echo -e "\n${GREENC}Odoo installed!${NC}\n";
 if [ ! -z $INSTALL_LOCAL_NGINX ]; then
     echo -e "${BLUEC}Installing and configuring local nginx..,${NC}";
     NGINX_CONF_PATH="/etc/nginx/sites-available/$(hostname).conf";
-    sudo apt-get install -y --no-install-recommends nginx;
+    sudo apt-get install -qqq -y --no-install-recommends nginx;
     sudo python $NGIX_CONF_GEN \
         --instance-name="$(hostname -s)" \
         --frontend-server-name="$(hostname)" > $NGINX_CONF_PATH;
