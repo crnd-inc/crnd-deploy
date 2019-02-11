@@ -34,8 +34,8 @@ WORKDIR=`pwd`;
 #--------------------------------------------------
 # Defaults
 #--------------------------------------------------
-DEFAULT_ODOO_BRANCH=10.0-maao-translations-uk-ua
-DEFAULT_ODOO_VERSION=10.0
+DEFAULT_ODOO_BRANCH=11.0
+DEFAULT_ODOO_VERSION=11.0
 #--------------------------------------------------
 # Parse environment variables
 #--------------------------------------------------
@@ -207,9 +207,12 @@ sudo apt-get install -qqq -y \
 # Generate locales
 #--------------------------------------------------
 echo -e "\n${BLUEC}Update locales...${NC}\n";
-sudo locale-gen en_US.UTF-8
-sudo locale-gen ru_UA.UTF-8
-sudo locale-gen uk_UA.UTF-8
+sudo locale-gen en_US.UTF-8;
+sudo locale-gen en_GB.UTF-8;
+sudo locale-gen ru_UA.UTF-8;
+sudo locale-gen uk_UA.UTF-8;
+update-locale LANG="en_US.UTF-8";
+update-locale LANGUAGE="en_US:en";
 
 #--------------------------------------------------
 # Ensure odoo-helper installed
