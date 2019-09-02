@@ -234,7 +234,7 @@ fi
 
 # Install odoo pre-requirements
 sudo odoo-helper install pre-requirements -y;
-sudo odoo-helper install sys-deps -y $ODOO_VERSION;
+sudo odoo-helper install sys-deps -y --branch "$ODOO_BRANCH" "$ODOO_VERSION";
 
 if [ ! -z $INSTALL_LOCAL_POSTGRES ]; then
     sudo odoo-helper install postgres;
