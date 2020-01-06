@@ -9,11 +9,11 @@
 #   - frontend_server_name
 
 NGINX_TEMPLATE = """
-upstream maao_{instance_name} {{
+upstream crnd_{instance_name} {{
         server {instance_ip}:{instance_port} weight=1 fail_timeout=2000s;
 }}
 
-upstream maao_{instance_name}_longpolling {{
+upstream crnd_{instance_name}_longpolling {{
         server {instance_ip}:{instance_lp_port} weight=1 fail_timeout=300s;
 }}
 
@@ -79,12 +79,12 @@ server {{
 
 
     location / {{
-        proxy_pass http://maao_{instance_name};
+        proxy_pass http://crnd_{instance_name};
     }}
 
     # Chat and IM related features support
     location /longpolling {{
-        proxy_pass http://maao_{instance_name}_longpolling;
+        proxy_pass http://crnd_{instance_name}_longpolling;
     }}
 
     # Restrict access
@@ -93,7 +93,7 @@ server {{
         #    allow trusted_network;
         #    allow trusted_ip;
         #    deny all;
-        proxy_pass http://maao_{instance_name};
+        proxy_pass http://crnd_{instance_name};
     }}
 
     # cache some static data in memory for 60mins.

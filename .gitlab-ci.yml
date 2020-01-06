@@ -10,12 +10,12 @@ before_script:
 
 test-11.0:
     script:
-        - bash ./maao-deploy.bash --odoo-version 11.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx
+        - bash ./crnd-deploy.bash --odoo-version 11.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx
 
 test-12.0:
     script:
-        - bash ./maao-deploy.bash --odoo-version 12.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx
+        - bash ./crnd-deploy.bash --odoo-version 12.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx
 
 test-13.0:
     script:
-        - bash ./maao-deploy.bash --odoo-version 13.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx
+        - bash ./crnd-deploy.bash --odoo-version 13.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx

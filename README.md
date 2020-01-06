@@ -1,12 +1,12 @@
-This is simple script to install and configure odoo for MaAO.
+This is simple script to install and configure Odoo.
 
-To deploy MaAO just clone repo to machine and run `maao-deploy.bash`.
-To get install options, just call `maao-deploy.bash` with `--help` arg
+To deploy Odoo just clone repo to machine and run `crnd-deploy.bash`.
+To get install options, just call `crnd-deploy.bash` with `--help` arg
 
 
 Example:
 
 ```bash
-git clone https://gitlab.crnd.pro/maao/maao-deploy.git
-sudo bash maao-deploy/maao-deploy.bash --help
+git clone https://gitlab.crnd.pro/crnd/crnd-deploy.git
+sudo bash crnd-deploy/crnd-deploy.bash --help
 ```
