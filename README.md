@@ -7,6 +7,6 @@ To get install options, just call `maao-deploy.bash` with `--help` arg
 Example:
 
 ```bash
-git clone https://gitlab.maao.com.ua/maao/maao-deploy.git
+git clone https://gitlab.crnd.pro/maao/maao-deploy.git
 sudo bash maao-deploy/maao-deploy.bash --help
 ```

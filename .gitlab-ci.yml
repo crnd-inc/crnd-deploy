@@ -1,4 +1,4 @@
-image: 10.100.98.41:5000/maao-docker/maao-ubuntu
+image: registry.crnd.pro/crnd/docker/ubuntu:18.04
 
 cache:
     paths:
@@ -8,14 +8,14 @@ before_script:
     - apt-get update
     - apt-get install sudo
 
-test-9.0:
-    script:
-        - bash ./maao-deploy.bash --odoo-version 9.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx
-
-test-10.0:
-    script:
-        - bash ./maao-deploy.bash --odoo-version 10.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx
-
 test-11.0:
     script:
         - bash ./maao-deploy.bash --odoo-version 11.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx
+
+test-12.0:
+    script:
+        - bash ./maao-deploy.bash --odoo-version 12.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx
+
+test-13.0:
+    script:
+        - bash ./maao-deploy.bash --odoo-version 13.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx

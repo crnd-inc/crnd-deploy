@@ -11,9 +11,9 @@
 #   ODOO_DB_HOST=localhost
 #   ODOO_DB_USER=odoo
 #   ODOO_DB_PASSWORD=odoo
-#   ODOO_REPO=https://github.com/managment-and-acounting-on-line/maao
-#   ODOO_BRANCH=10.0-maao-translations-uk-ua
-#   ODOO_VERSION=10.0
+#   ODOO_REPO=https://github.com/odoo/odoo
+#   ODOO_BRANCH=12.0
+#   ODOO_VERSION=12.0
 #   ODOO_WORKERS=2
 #
 # Also some configuration could be passed as command line args:
@@ -34,12 +34,12 @@ WORKDIR=`pwd`;
 #--------------------------------------------------
 # Defaults
 #--------------------------------------------------
-DEFAULT_ODOO_BRANCH=11.0
-DEFAULT_ODOO_VERSION=11.0
+DEFAULT_ODOO_BRANCH=12.0
+DEFAULT_ODOO_VERSION=12.0
 #--------------------------------------------------
 # Parse environment variables
 #--------------------------------------------------
-ODOO_REPO=${ODOO_REPO:-https://github.com/managment-and-acounting-on-line/maao};
+ODOO_REPO=${ODOO_REPO:-https://github.com/odoo/odoo};
 ODOO_BRANCH=${ODOO_BRANCH:-$DEFAULT_ODOO_BRANCH};
 ODOO_VERSION=${ODOO_VERSION:-$DEFAULT_ODOO_VERSION};
 ODOO_USER=${ODOO_USER:-odoo};
