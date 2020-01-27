@@ -103,7 +103,7 @@ server {{
         proxy_buffering    on;
         expires 864000;
 
-        proxy_pass         http://maao_{instance_name};
+        proxy_pass         http://crnd_{instance_name};
     }}
 }}
 """

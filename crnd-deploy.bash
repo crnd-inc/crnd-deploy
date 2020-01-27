@@ -17,7 +17,7 @@
 #   ODOO_WORKERS=2
 #
 # Also some configuration could be passed as command line args:
-#   sudo bash maao-deploy.bash <db_host> <db_user> <db_pass>
+#   sudo bash crnd-deploy.bash <db_host> <db_user> <db_pass>
 # 
 
 #--------------------------------------------------
@@ -78,7 +78,7 @@ function print_usage {
     echo "
 Usage:
 
-    maao-deploy [options]    - install odoo
+    crnd-deploy [options]    - install odoo
 
 Options:
 
@@ -104,6 +104,9 @@ Options:
     --workers <workers>      - number of workers to run. Default: $ODOO_WORKERS
     --local-nginx            - install local nginx and configure it for this
                                odoo instance
+    --odoo-helper-dev        - If set then use dev version of odoo-helper
+    --install-ua-locales     - If set then install also uk_UA and ru_RU
+                               system locales.
     -h|--help|help           - show this help message
 ";
 }
@@ -169,12 +172,18 @@ do
         --local-postgres)
             # Generate random password for database
             DB_HOST="localhost";
-            DB_PASSWORD="$(< /dev/urandom tr -dc A-Za-z0-9 | head -c 12)";
+            DB_PASSWORD="$(< /dev/urandom tr -dc A-Za-z0-9 | head -c 32)";
             INSTALL_LOCAL_POSTGRES=1;
         ;;
         --local-nginx)
             INSTALL_LOCAL_NGINX=1;
             PROXY_MODE=1;
+        ;;
+        --odoo-helper-dev)
+            USE_DEV_VERSION_OF_ODOO_HElPER=1;
+        ;;
+        --install-ua-locales)
+            CRND_DEPLOY_INSTALL_UA_LOCALES=1;
         ;;
         -h|--help|help)
             print_usage;
@@ -209,8 +218,12 @@ sudo apt-get install -qqq -y \
 echo -e "\n${BLUEC}Update locales...${NC}\n";
 sudo locale-gen en_US.UTF-8;
 sudo locale-gen en_GB.UTF-8;
-sudo locale-gen ru_UA.UTF-8;
-sudo locale-gen uk_UA.UTF-8;
+
+if [ -n "$CRND_DEPLOY_INSTALL_UA_LOCALES" ]; then
+    sudo locale-gen ru_UA.UTF-8;
+    sudo locale-gen uk_UA.UTF-8;
+fi
+
 update-locale LANG="en_US.UTF-8";
 update-locale LANGUAGE="en_US:en";
 
@@ -226,7 +239,9 @@ if ! command -v odoo-helper >/dev/null 2>&1; then
     fi
 
     # install latest version of odoo-helper scripts
-    sudo bash /tmp/odoo-helper-install.bash dev
+    if [ -n "$USE_DEV_VERSION_OF_ODOO_HElPER" ]; then
+        sudo bash /tmp/odoo-helper-install.bash dev
+    fi
 
     # Print odoo-helper version
     odoo-helper --version;
