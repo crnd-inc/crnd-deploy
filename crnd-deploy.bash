@@ -276,8 +276,10 @@ if ! command -v odoo-helper >/dev/null 2>&1; then
     fi
 
     # install latest version of odoo-helper scripts
-    if [ -n "$USE_DEV_VERSION_OF_ODOO_HElPER" ]; then
-        sudo bash /tmp/odoo-helper-install.bash dev
+    if [ -z "$USE_DEV_VERSION_OF_ODOO_HElPER" ]; then
+        sudo bash /tmp/odoo-helper-install.bash master;
+    else
+        sudo bash /tmp/odoo-helper-install.bash dev;
     fi
 
     # Print odoo-helper version
