@@ -30,12 +30,14 @@ May be working on other debian-based linux distributions, but without any warran
 
 ## Supported Odoo Versions
 
-- 8.0 (**not tested**)
-- 9.0 (**not tested**)
-- 10.0 (**not tested**)
-- 11.0 :heavy_check_mark:
-- 12.0 :heavy_check_mark:
-- 13.0 :heavy_check_mark:
+| Odoo Serie | Support            |
+|------------|--------------------|
+| 8.0        | ***not tested***   |
+| 9.0        | ***not tested***   |
+| 10.0       | ***not tested***   |
+| 11.0       | :heavy_check_mark: |
+| 12.0       | :heavy_check_mark: |
+| 13.0       | :heavy_check_mark: |
 
 ## Options available
 
