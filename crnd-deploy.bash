@@ -1,5 +1,22 @@
 #!/bin/bash
 
+# CRND Deploy - the simple way to start new production-ready Odoo instance.
+# Copyright (C) 2020  Center of Research and Development
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
 # WARN: Must be ran under SUDO
 
 # NOTE: Automaticaly installs odoo-helper-scripts if not installed yet
@@ -78,14 +95,16 @@ function print_usage {
     echo "
 Usage:
 
-    crnd-deploy [options]    - install odoo
+    crnd-deploy.bash [options]    - install odoo
 
 Options:
 
     --odoo-repo <repo>       - git repository to clone odoo from.
                                default: $ODOO_REPO
-    --odoo-branch <branch>   - odoo branch to clone. default: $ODOO_BRANCH
-    --odoo-version <version> - odoo version to clone. default: $ODOO_VERSION
+    --odoo-branch <branch>   - odoo branch to clone.
+                               default: $ODOO_BRANCH
+    --odoo-version <version> - odoo version to clone.
+                               default: $ODOO_VERSION
     --odoo-user <user>       - name of system user to run odoo with.
                                default: $ODOO_USER
     --db-host <host>         - database host to be used by odoo.
@@ -101,13 +120,31 @@ Options:
     --local-postgres         - install local instance of postgresql server
     --proxy-mode             - Set this option if you plan to run odoo
                                behind proxy (nginx, etc)
-    --workers <workers>      - number of workers to run. Default: $ODOO_WORKERS
+    --workers <workers>      - number of workers to run.
+                               Default: $ODOO_WORKERS
     --local-nginx            - install local nginx and configure it for this
                                odoo instance
     --odoo-helper-dev        - If set then use dev version of odoo-helper
     --install-ua-locales     - If set then install also uk_UA and ru_RU
                                system locales.
     -h|--help|help           - show this help message
+
+Suggestion:
+
+    Take a look at [Yodoo Cockpit](https://crnd.pro/yodoo-cockpit) project,
+    and discover the easiest way to manage your odoo installation.
+
+    Just short notes about [Yodoo Cockpit](https://crnd.pro/yodoo-cockpit):
+        - start new production-ready odoo instance in 1-2 minutes.
+        - add custom addons to your odoo instances in 5-10 minutes.
+        - out-of-the-box email configuration: just press button and
+          add some records to your DNS, and get a working email
+        - make your odoo instance available to external world in 30 seconds:
+          just add single record in your DNS
+
+    If you have any questions, then contact us at
+    [info@crnd.pro](mailto:info@crnd.pro),
+    so we could schedule online-demonstration.
 ";
 }
 
