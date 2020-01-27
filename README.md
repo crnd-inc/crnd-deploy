@@ -84,6 +84,7 @@ Options:
     --odoo-helper-dev        - If set then use dev version of odoo-helper
     --install-ua-locales     - If set then install also uk_UA and ru_RU
                                system locales.
+    -v|--version             - print version and exit
     -h|--help|help           - show this help message
 
 Suggestion:
@@ -138,7 +139,7 @@ In case of trouble, please report there.
 
 ![Center of Research & Development](https://crnd.pro/web/image/3699/300x140/crnd.png)
 
-Our web site is: https://crnd.pro/
+Our web site is: [crnd.pro](https://crnd.pro/)
 
 This module is maintained by the [Center of Research & Development](https://crnd.pro) company.
 

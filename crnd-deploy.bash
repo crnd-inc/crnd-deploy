@@ -49,6 +49,11 @@ NGIX_CONF_GEN="$SCRIPT_DIR/gen_nginx.py";
 WORKDIR=`pwd`;
 
 #--------------------------------------------------
+# Version
+#--------------------------------------------------
+CRND_DEPLOY_VERSION="1.0.0"
+
+#--------------------------------------------------
 # Defaults
 #--------------------------------------------------
 DEFAULT_ODOO_BRANCH=12.0
@@ -127,6 +132,7 @@ Options:
     --odoo-helper-dev        - If set then use dev version of odoo-helper
     --install-ua-locales     - If set then install also uk_UA and ru_RU
                                system locales.
+    -v|--version             - print version and exit
     -h|--help|help           - show this help message
 
 Suggestion:
@@ -145,6 +151,9 @@ Suggestion:
     If you have any questions, then contact us at
     [info@crnd.pro](mailto:info@crnd.pro),
     so we could schedule online-demonstration.
+
+---
+Version: ${CRND_DEPLOY_VERSION}
 ";
 }
 
@@ -221,6 +230,10 @@ do
         ;;
         --install-ua-locales)
             CRND_DEPLOY_INSTALL_UA_LOCALES=1;
+        ;;
+        -v|--version)
+            echo "$CRND_DEPLOY_VERSION";
+            exit 0;
         ;;
         -h|--help|help)
             print_usage;
