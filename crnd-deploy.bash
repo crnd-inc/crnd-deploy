@@ -266,10 +266,14 @@ sudo apt-get install -qqq -y \
 # Generate locales
 #--------------------------------------------------
 echo -e "\n${BLUEC}Update locales...${NC}\n";
+sed -i -r "s@# en_US.UTF-8(.*)@en_US.UTF-8\1@" /etc/locale.gen;
+sed -i -r "s@# en_GB.UTF-8(.*)@en_GB.UTF-8\1@" /etc/locale.gen;
 sudo locale-gen en_US.UTF-8;
 sudo locale-gen en_GB.UTF-8;
 
 if [ -n "$CRND_DEPLOY_INSTALL_UA_LOCALES" ]; then
+    sed -i -r "s@# ru_UA.UTF-8(.*)@ru_UA.UTF-8\1@" /etc/locale.gen;
+    sed -i -r "s@# uk_UA.UTF-8(.*)@uk_UA.UTF-8\1@" /etc/locale.gen;
     sudo locale-gen ru_UA.UTF-8;
     sudo locale-gen uk_UA.UTF-8;
 fi
