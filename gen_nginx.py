@@ -49,7 +49,7 @@ upstream crnd_{instance_name}_longpolling {{
 server {{
     listen   {frontend_ip}:80;
     # listen   {frontend_ip}:443 ssl;
-    server_name  {frontend_server_name};
+    # server_name  {frontend_server_name};
 
     #-----------------------------------------------------------------------
     access_log  /var/log/nginx/{instance_name}.access.log;
