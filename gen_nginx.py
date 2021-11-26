@@ -97,11 +97,13 @@ server {{
 
 
     location / {{
+        add_header Content-Security-Policy "upgrade-insecure-requests";
         proxy_pass http://crnd_{instance_name};
     }}
 
     # Chat and IM related features support
     location /longpolling {{
+        add_header Content-Security-Policy "upgrade-insecure-requests";
         proxy_pass http://crnd_{instance_name}_longpolling;
     }}
 
@@ -111,6 +113,7 @@ server {{
         #    allow trusted_network;
         #    allow trusted_ip;
         #    deny all;
+        add_header Content-Security-Policy "upgrade-insecure-requests";
         proxy_pass http://crnd_{instance_name};
     }}
 
@@ -120,7 +123,7 @@ server {{
         proxy_cache_valid 200 60m;
         proxy_buffering    on;
         expires 864000;
-
+        add_header Content-Security-Policy "upgrade-insecure-requests";
         proxy_pass         http://crnd_{instance_name};
     }}
 }}
