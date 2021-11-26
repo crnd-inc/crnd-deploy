@@ -35,3 +35,10 @@ test-14.0:
         - bash ./crnd-deploy.bash --version
         - bash ./crnd-deploy.bash --help
         - bash ./crnd-deploy.bash --odoo-version 14.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx
+
+test-15.0:
+    image: registry.crnd.pro/crnd/docker/ubuntu:20.04
+    script:
+        - bash ./crnd-deploy.bash --version
+        - bash ./crnd-deploy.bash --help
+        - bash ./crnd-deploy.bash --odoo-version 15.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx

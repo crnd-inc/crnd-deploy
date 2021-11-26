@@ -38,6 +38,8 @@ May be working on other debian-based linux distributions, but without any warran
 | 11.0       | :heavy_check_mark: |
 | 12.0       | :heavy_check_mark: |
 | 13.0       | :heavy_check_mark: |
+| 14.0       | :heavy_check_mark: |
+| 15.0       | :heavy_check_mark: |
 
 ## Options available
 
