@@ -160,5 +160,5 @@ template_group.add_argument(
 args = parser.parse_args()
 
 generated_conf = NGINX_TEMPLATE.format(**vars(args))
-print generated_conf
+print(generated_conf)
 
