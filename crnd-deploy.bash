@@ -268,14 +268,14 @@ sudo apt-get install -qqq -y \
 echo -e "\n${BLUEC}Update locales...${NC}\n";
 sed -i -r "s@# en_US.UTF-8(.*)@en_US.UTF-8\1@" /etc/locale.gen;
 sed -i -r "s@# en_GB.UTF-8(.*)@en_GB.UTF-8\1@" /etc/locale.gen;
-sudo locale-gen en_US.UTF-8;
-sudo locale-gen en_GB.UTF-8;
+locale-gen en_US.UTF-8;
+locale-gen en_GB.UTF-8;
 
 if [ -n "$CRND_DEPLOY_INSTALL_UA_LOCALES" ]; then
     sed -i -r "s@# ru_UA.UTF-8(.*)@ru_UA.UTF-8\1@" /etc/locale.gen;
     sed -i -r "s@# uk_UA.UTF-8(.*)@uk_UA.UTF-8\1@" /etc/locale.gen;
-    sudo locale-gen ru_UA.UTF-8;
-    sudo locale-gen uk_UA.UTF-8;
+    locale-gen ru_UA.UTF-8;
+    locale-gen uk_UA.UTF-8;
 fi
 
 update-locale LANG="en_US.UTF-8";
@@ -294,9 +294,9 @@ if ! command -v odoo-helper >/dev/null 2>&1; then
 
     # install latest version of odoo-helper scripts
     if [ -z "$USE_DEV_VERSION_OF_ODOO_HElPER" ]; then
-        sudo bash /tmp/odoo-helper-install.bash master;
+        ALWAYS_ANSWER_YES=1 bash /tmp/odoo-helper-install.bash master;
     else
-        sudo bash /tmp/odoo-helper-install.bash dev;
+        ALWAYS_ANSWER_YES=1 bash /tmp/odoo-helper-install.bash dev;
     fi
 
     # Print odoo-helper version
@@ -304,8 +304,8 @@ if ! command -v odoo-helper >/dev/null 2>&1; then
 fi
 
 # Install odoo pre-requirements
-sudo odoo-helper install pre-requirements -y;
-sudo odoo-helper install sys-deps -y --branch "$ODOO_BRANCH" "$ODOO_VERSION";
+odoo-helper install pre-requirements -y;
+odoo-helper install sys-deps -y --branch "$ODOO_BRANCH" "$ODOO_VERSION";
 
 if [ ! -z $INSTALL_LOCAL_POSTGRES ]; then
     sudo odoo-helper install postgres;
