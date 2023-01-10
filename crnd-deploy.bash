@@ -29,8 +29,8 @@
 #   ODOO_DB_USER=odoo
 #   ODOO_DB_PASSWORD=odoo
 #   ODOO_REPO=https://github.com/odoo/odoo
-#   ODOO_BRANCH=12.0
-#   ODOO_VERSION=12.0
+#   ODOO_BRANCH=15.0
+#   ODOO_VERSION=15.0
 #   ODOO_WORKERS=2
 #
 # Also some configuration could be passed as command line args:
@@ -51,13 +51,13 @@ WORKDIR=`pwd`;
 #--------------------------------------------------
 # Version
 #--------------------------------------------------
-CRND_DEPLOY_VERSION="1.0.0"
+CRND_DEPLOY_VERSION="1.1.0"
 
 #--------------------------------------------------
 # Defaults
 #--------------------------------------------------
-DEFAULT_ODOO_BRANCH=12.0
-DEFAULT_ODOO_VERSION=12.0
+DEFAULT_ODOO_BRANCH=15.0
+DEFAULT_ODOO_VERSION=15.0
 #--------------------------------------------------
 # Parse environment variables
 #--------------------------------------------------
@@ -455,7 +455,7 @@ if [ ! -z $INSTALL_LOCAL_NGINX ]; then
     echo -e "${BLUEC}Installing and configuring local nginx..,${NC}";
     NGINX_CONF_PATH="/etc/nginx/sites-available/$(hostname).conf";
     sudo apt-get install -qqq -y --no-install-recommends nginx;
-    odoo-helper python "$NGIX_CONF_GEN" \
+    odoo-helper python3 "$NGIX_CONF_GEN" \
         --instance-name="$(hostname -s)" \
         --frontend-server-name="$(hostname)" > $NGINX_CONF_PATH;
     echo -e "${GREENC}Nginx seems to be installed and default config is generated. ";

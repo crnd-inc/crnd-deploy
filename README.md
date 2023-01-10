@@ -1,6 +1,7 @@
 # CRND Deploy
 
-This is simple script to install and configure production-ready [Odoo](https://www.odoo.com/) instance.
+This is simple script to install and configure production-ready [Odoo](https://www.odoo.com/) instance,
+managed by [odoo-helper-scripts](https://katyukha.gitlab.io/odoo-helper-scripts/).
 
 To deploy [Odoo](https://www.odoo.com/) just clone repo to machine and run `sudo crnd-deploy.bash`.
 To get install options, just call `sudo crnd-deploy.bash --help` command.
@@ -8,6 +9,14 @@ To get install options, just call `sudo crnd-deploy.bash --help` command.
 Also, this script supports automatic installation of
 [PostgreSQL](https://www.postgresql.org/) and
 [Nginx](https://nginx.org/en/) on same machine.
+
+## Features
+
+- Easy installation of production-ready odoo instances.
+- Automatic installation and pre-configuration of [Nginx](https://nginx.org/en/) (if needed).
+- Automatic installation of [PostgreSQL](https://www.postgresql.org/) (if needed)
+- Full power of [odoo-helper-scripts](https://katyukha.gitlab.io/odoo-helper-scripts/) that significantly simplifies the management of the server.
+
 
 ## Yodoo Cockpit
 
@@ -24,7 +33,7 @@ If you have any questions, then contact us at [info@crnd.pro](mailto:info@crnd.p
 
 ## CRND-Deploy Requirements
 
-Only [Ubuntu](https://ubuntu.com/) 16.04 and 18.04 supported and tested.
+Only [Ubuntu](https://ubuntu.com/) 18.04 and 20.04 supported and tested.
 
 May be working on other debian-based linux distributions, but without any warranty.
 
@@ -40,6 +49,7 @@ May be working on other debian-based linux distributions, but without any warran
 | 13.0       | :heavy_check_mark: |
 | 14.0       | :heavy_check_mark: |
 | 15.0       | :heavy_check_mark: |
+| 16.0       | :heavy_check_mark: |
 
 ## Options available
 
@@ -116,12 +126,26 @@ Basically to install [Odoo](https://www.odoo.com/) on new machine you have to do
 git clone https://github.com/crnd-inc/crnd-deploy
 
 # Install odoo
-sudo bash crnd-deploy/crnd-deploy.bash --odoo-version 12.0 --local-postgres --local-nginx
+sudo bash crnd-deploy/crnd-deploy.bash --odoo-version 15.0 --local-postgres --local-nginx
 ```
 
 This command will automatically install and configure [Odoo](https://www.odoo.com/),
 [PostgreSQL](https://www.postgresql.org/), [Nginx](https://nginx.org/en/)
 on machine, thus you get complete production-ready odoo installation.
+
+After odoo installed, it could be easily managed by [odoo-helper-scripts](https://katyukha.gitlab.io/odoo-helper-scripts/).
+
+For example, git repository with third-party addons could be easily added via command:
+
+```sh
+odoo-helper fetch -r <my git repo>
+```
+
+Server logs could be viewed with `less` pager via command
+
+```sh
+odoo-helper server log
+```
 
 
 ## Level up your service quality
@@ -132,10 +156,12 @@ Just test it at [yodoo.systems](https://yodoo.systems/saas/templates): choose te
 
 Test all available features of [Bureaucrat ITSM](https://crnd.pro/itsm) with [this template](https://yodoo.systems/saas/template/bureaucrat-itsm-demo-data-95).
 
+
 ## Bug tracker
 
 Bugs are tracked on [https://crnd.pro/requests](https://crnd.pro/requests>).
 In case of trouble, please report there.
+
 
 ## Maintainer
 
