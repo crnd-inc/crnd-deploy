@@ -6,14 +6,13 @@ cache:
 
 before_script:
     - apt-get update
-    - apt-get install sudo
 
 test-11.0:
-    image: registry.crnd.pro/crnd-opensource/docker/ubuntu:18.04
+    image: registry.crnd.pro/crnd-opensource/docker/ubuntu:20.04
     script:
         - bash ./crnd-deploy.bash --version
         - bash ./crnd-deploy.bash --help
-        - bash ./crnd-deploy.bash --odoo-version 11.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx
+        - bash ./crnd-deploy.bash --odoo-version 11.0 --odoo-user odoo --install-dir /opt/odoo --install-mode archive --local-postgres --local-nginx --build-python-if-needed
 
 test-12.0:
     image: registry.crnd.pro/crnd-opensource/docker/ubuntu:20.04
