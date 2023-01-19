@@ -70,7 +70,7 @@ PROJECT_ROOT_DIR=${ODOO_INSTALL_DIR:-/opt/odoo};
 DB_HOST=${ODOO_DB_HOST:-localhost};
 DB_USER=${ODOO_DB_USER:-odoo};
 DB_PASSWORD=${ODOO_DB_PASSWORD:-odoo};
-INSTALL_MODE=${INSTALL_MODE:-git};
+INSTALL_MODE=${INSTALL_MODE:-archive};
 
 
 #--------------------------------------------------
@@ -86,7 +86,7 @@ LBLUEC='\e[94m';
 
 if [[ $UID != 0 ]]; then
     echo -e "${REDC}ERROR${NC}";
-    echo -e "${YELLOWC}Please run this script with sudo:${NC}"
+    echo -e "${YELLOWC}Please run this script as root or with sudo:${NC}"
     echo -e "${BLUEC}sudo $0 $* ${NC}"
     exit 1
 fi
@@ -104,36 +104,44 @@ Usage:
 
 Options:
 
-    --odoo-repo <repo>       - git repository to clone odoo from.
-                               default: $ODOO_REPO
-    --odoo-branch <branch>   - odoo branch to clone.
-                               default: $ODOO_BRANCH
-    --odoo-version <version> - odoo version to clone.
-                               default: $ODOO_VERSION
-    --odoo-user <user>       - name of system user to run odoo with.
-                               default: $ODOO_USER
-    --db-host <host>         - database host to be used by odoo.
-                               default: $DB_HOST
-    --db-user <user>         - database user to connect to db with
-                               default: $DB_USER
-    --db-password <password> - database password to connect to db with
-                               default: $DB_PASSWORD
-    --install-dir <path>     - directory to install odoo in
-                               default: $PROJECT_ROOT_DIR
-    --install-mode <mode>    - installation mode. could be: 'git', 'archive'
-                               default: $INSTALL_MODE
-    --local-postgres         - install local instance of postgresql server
-    --proxy-mode             - Set this option if you plan to run odoo
-                               behind proxy (nginx, etc)
-    --workers <workers>      - number of workers to run.
-                               Default: $ODOO_WORKERS
-    --local-nginx            - install local nginx and configure it for this
-                               odoo instance
-    --odoo-helper-dev        - If set then use dev version of odoo-helper
-    --install-ua-locales     - If set then install also uk_UA and ru_RU
-                               system locales.
-    -v|--version             - print version and exit
-    -h|--help|help           - show this help message
+    --odoo-repo <repo>         - git repository to clone odoo from.
+                                 default: $ODOO_REPO
+    --odoo-branch <branch>     - odoo branch to clone.
+                                 default: $ODOO_BRANCH
+    --odoo-version <version>   - odoo version to clone.
+                                 default: $ODOO_VERSION
+    --odoo-user <user>         - name of system user to run odoo with.
+                                 default: $ODOO_USER
+    --build-python <ver>       - build custom python for specified version
+                                 'auto' could be specified to automatically guess correct version.
+    --build-python-if-needed   - Automatically detect if it is necessary to build custom python.
+    --build-python-optimize    - Apply '--enable-optimizations' for python build.
+                                 This could take a while.
+    --build-python-sqlite3     - Apply  --enable-loadable-sqlite-extensions
+                                 when building python.
+    --node-version <ver>       - Version of node.js to be installed. By default lts.
+    --db-host <host>           - database host to be used by odoo.
+                                 default: $DB_HOST
+    --db-user <user>           - database user to connect to db with
+                                 default: $DB_USER
+    --db-password <password>   - database password to connect to db with
+                                 default: $DB_PASSWORD
+    --install-dir <path>       - directory to install odoo in
+                                 default: $PROJECT_ROOT_DIR
+    --install-mode <mode>      - installation mode. could be: 'git', 'archive'
+                                 default: $INSTALL_MODE
+    --local-postgres           - install local instance of postgresql server
+    --proxy-mode               - Set this option if you plan to run odoo
+                                 behind proxy (nginx, etc)
+    --workers <workers>        - number of workers to run.
+                                 Default: $ODOO_WORKERS
+    --local-nginx              - install local nginx and configure it for this
+                                 odoo instance
+    --odoo-helper-dev          - If set then use dev version of odoo-helper
+    --install-ua-locales       - If set then install also uk_UA and ru_RU
+                                 system locales.
+    -v|--version               - print version and exit
+    -h|--help|help             - show this help message
 
 Suggestion:
 
@@ -182,6 +190,23 @@ do
         ;;
         --odoo-user)
             ODOO_USER=$2;
+            shift;
+        ;;
+        --build-python)
+            ODOO_BUILD_PYTHON_VERSION=$2;
+            shift;
+        ;;
+        --build-python-if-needed)
+            ODOO_BUILD_PYTHON_VERSION=auto;
+        ;;
+        --build-python-optimize)
+            ODOO_BUILD_PYTHON_OPTIMIZE=1;
+        ;;
+        --build-python-sqlite3)
+            ODOO_BUILD_PYTHON_SQLITE3=1;
+        ;;
+        --node-version)
+            ODOO_INSTALL_NODE_VERSION=$2;
             shift;
         ;;
         --db-host)
@@ -256,11 +281,11 @@ set -e;   # fail on errors
 # Update Server and Install Dependencies
 #--------------------------------------------------
 echo -e "\n${BLUEC}Update Server...${NC}\n";
-sudo apt-get update -qq;
-sudo apt-get upgrade -qq -y;
+apt-get update -qq;
+apt-get upgrade -qq -y;
 echo -e "\n${BLUEC}Installing basic dependencies...${NC}\n";
-sudo apt-get install -qqq -y \
-    wget locales;
+apt-get install -qqq -y \
+    sudo wget locales;
 
 #--------------------------------------------------
 # Generate locales
@@ -308,17 +333,17 @@ odoo-helper install pre-requirements -y;
 odoo-helper install sys-deps -y --branch "$ODOO_BRANCH" "$ODOO_VERSION";
 
 if [ ! -z $INSTALL_LOCAL_POSTGRES ]; then
-    sudo odoo-helper install postgres;
+    odoo-helper install postgres;
 
-    if ! sudo odoo-helper exec postgres_test_connection; then
+    if ! odoo-helper exec postgres_test_connection; then
         echo -e "${YELLOWC}WARNING${NC}: it seams postgres not started, so start it before creating postgres user.";
 
         # It seams we ran inside docker container, so start postgres server before user creation
-        sudo /etc/init.d/postgresql start;
-        sudo odoo-helper postgres user-create $DB_USER $DB_PASSWORD;
-        sudo /etc/init.d/postgresql stop;
+        /etc/init.d/postgresql start;
+        odoo-helper postgres user-create $DB_USER $DB_PASSWORD;
+        /etc/init.d/postgresql stop;
     else
-        sudo odoo-helper postgres user-create $DB_USER $DB_PASSWORD;
+        odoo-helper postgres user-create $DB_USER $DB_PASSWORD;
     fi
 fi
 
@@ -461,4 +486,3 @@ if [ ! -z $INSTALL_LOCAL_NGINX ]; then
     echo -e "${GREENC}Nginx seems to be installed and default config is generated. ";
     echo -e "Look at $NGINX_CONF_PATH for nginx config.${NC}";
 fi
-
